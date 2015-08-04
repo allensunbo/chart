@@ -24,16 +24,16 @@ angular.module('myApp.controllers', []).
       },
       series: [{
         name: 'available',
-        data: [[3,4],[6,10],[2,3],[3,4],[4,5]]
+        data: [[3, 4], [6, 10], [2, 3], [3, 4], [4, 5]]
       }, {
         name: 'missing',
-        data: [[2,3],[4,6],[2,3],[3,4],[4,5]]
+        data: [[2, 3], [4, 6], [2, 3], [3, 4], [4, 5]]
       }, {
         name: 'forwarded',
-        data: [[1,2],[2,4],[2,3],[3,4],[4,5]]
+        data: [[1, 2], [2, 4], [2, 3], [3, 4], [4, 5]]
       }, {
         name: 'test',
-        data: [[0,1],[0,2],[2,3],[3,4],[4,5]]
+        data: [[0, 1], [0, 2], [2, 3], [3, 4], [4, 5]]
       }],
       allDates: allDates
     };
@@ -71,8 +71,35 @@ angular.module('myApp.controllers', []).
       }
     };
 
+    function convertRawDataToChartData() {
+      for (var i = 0; i < dates.length; i++) {
+        var available = dates[i]['available'];
 
+      }
+    }
 
+    convertRawDataToChartData();
+
+    // merge 1D array data into ranges
+    // eg [0, 1, 2, 5, 8, 9, 10] ==> [[0,3], [5,6], [8,11]
+    function merge(data) {
+      var _start = 0, _end = 0, cur = 1;
+      var result = [];
+      while (_end < data.length) {
+        if (data[cur] === data[cur - 1] + 1) {
+          _end = cur;
+          cur++;
+        } else {
+          result.push([data[_start], data[_end] + 1]);
+          _end++;
+          _start = _end;
+          cur = _start + 1;
+        }
+      }
+      return result;
+    }
+
+    console.log(merge([0, 1, 2, 5, 8, 9, 10]));
 
     /*$scope.chartConfig = {
      options: {
