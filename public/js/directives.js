@@ -17,26 +17,45 @@ angular.module('myApp.directives', [])
         config: '='
       },
       link: function (scope, elem, attrs) {
-        extendConfig(scope, $timeout);
 
-        var dates = scope.config.dates;
-        // get from chartConfig directly!
-        // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
-        var seriesTypes = [];
-        for (var attr in dates) {
-          for (var t in dates[attr]) {
-            seriesTypes.push(t);
+        $timeout(function () {
+          extendConfig(scope, $timeout);
+
+          var dates = scope.config.dates;
+          // TODO get from chartConfig directly!
+          // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
+          var seriesTypes = [];
+          for (var attr in dates) {
+            for (var t in dates[attr]) {
+              seriesTypes.push(t);
+            }
+            break;
           }
-          break;
-        }
 
-        var tableInfo = collectTableInfo(seriesTypes, dates);
-        console.log(tableInfo);
+          var tableInfo = collectTableInfo(seriesTypes, dates);
+          // console.log(tableInfo);
 
-        // console.log(merge([0, 1, 2, 5, 8, 9, 10]));
+          var table = convertRawDataToChartData(scope, dates, tableInfo, seriesTypes);
 
+          // fix color
+          scope.config.options.colors = [];
+          console.log(scope.config.id)
+          for (attr in table) {
+            for (var i = 0; i < table[attr].length; i++) {
+              if (table[attr][i]['seriesType'] === 'available') {
+                scope.config.options.colors.push('#2f7ed8');
+              } else if (table[attr][i]['seriesType'] === 'missing') {
+                scope.config.options.colors.push('#910000');
+              } else if (table[attr][i]['seriesType'] === 'forwarded') {
+                scope.config.options.colors.push('#1aadce');
+              } else if (table[attr][i]['seriesType'] === 'test') {
+                scope.config.options.colors.push('#1aadce');
+              }
+            }
+            break;
+          }
 
-        convertRawDataToChartData(scope, dates, tableInfo, seriesTypes);
+        }, 0);
       }
     }
   });
@@ -77,12 +96,11 @@ function collectTableInfo(seriesTypes, dates) {
   return tableInfo;
 }
 
-function extendConfig(scope, $timeout) {
-  $timeout(function () {
-    var _config = {};
-    angular.extend(_config, defaultConfig(scope), scope.config);
-    angular.copy(_config, scope.config);
-  }, 0);
+function extendConfig(scope) {
+  var _config = {};
+  angular.extend(_config, defaultConfig(scope), scope.config);
+  angular.copy(_config, scope.config);
+
 }
 
 function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
@@ -135,13 +153,13 @@ function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
 
   console.log('series=');
   console.log(JSON.stringify(series));
-
+  return table;
 }
 
 function defaultConfig(scope) {
   return {
     options: {
-      colors: ['#2f7ed8', '#2f7ed8', '#2f7ed8', '#2f7ed8', '#910000', '#910000', '#910000', '#1aadce', '#1aadce', '#1aadce', '#1aadce', '#1aadce'],
+      // colors: ['#2f7ed8', '#2f7ed8', '#2f7ed8', '#2f7ed8', '#910000', '#910000', '#910000', '#1aadce', '#1aadce', '#1aadce', '#1aadce', '#1aadce'],
       chart: {
         type: 'columnrange',
         inverted: true,

@@ -31,7 +31,7 @@ angular.module('myApp.services', [])
         'available': [],
         'missing': [],
         'forwarded': [],
-        'test': []
+        'test': [2, 4, 5, 9, 11, 12, 13],
       },
       'Price': {
         'available': [],
@@ -43,7 +43,6 @@ angular.module('myApp.services', [])
 
     var allDates = [];
     var startDate = new Date('2009-05-01');
-    var endDate = new Date('2009-06-30');
     for (var i = 0; i < 100; i++) {
       var d = new Date('2009-05-01');
       d.setDate(startDate.getDate() + i);

@@ -16,113 +16,12 @@ angular.module('myApp.controllers', []).
       xAxis: {
         categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price']
       },
-      /* series: [{
-       name: 'available',
-       data: [[3, 4], [6, 10], [2, 3], [3, 4], [4, 5]]
-       }, {
-       name: 'missing',
-       data: [[2, 3], [4, 6], [2, 3], [3, 4], [4, 5]]
-       }, {
-       name: 'forwarded',
-       data: [[1, 2], [2, 4], [2, 3], [3, 4], [4, 5]]
-       }, {
-       name: 'test',
-       data: [[0, 0.5], [1, 2], [2, 3], [3, 4], [4, 5]]
-       }],*/
+      series: [],
       allDates: allDates,
       dates: dates
     };
 
-
-
-    /*$scope.chartConfig = {
-     options: {
-     chart: {
-     type: 'column',
-     inverted: true
-     },
-     plotOptions: {
-     column: {
-     stacking: 'normal',
-     dataLabels: {
-     enabled: true,
-     color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-     style: {
-     textShadow: '0 0 3px black'
-     }
-     },
-     showInLegend: true
-     },
-     series: {
-     animation: false,
-     events: {
-     legendItemClick: function () {
-     return false; // <== returning false will cancel the default action
-     }
-     }
-     }
-     }
-     },
-     title: {
-     text: 'Data Coverage Chart'
-     },
-     xAxis: {
-     categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price']
-     },
-     yAxis: {
-     min: 0,
-     title: {
-     text: 'Total fruit consumption'
-     },
-     stackLabels: {
-     enabled: true,
-     style: {
-     fontWeight: 'bold',
-     color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-     }
-     },
-     labels: {
-     formatter: function () {
-     return allDates[Math.floor(this.value)];
-     }
-     },
-     tickInterval: 1
-     },
-     legend: {
-     align: 'right',
-     x: -30,
-     verticalAlign: 'top',
-     y: 25,
-     floating: true,
-     backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-     borderColor: '#CCC',
-     borderWidth: 1,
-     shadow: false,
-     enabled: false
-     },
-     tooltip: {
-     formatter: function () {
-     return '<b>' + this.x + '</b><br/>' +
-     this.series.name + ': ' + this.y + '<br/>' +
-     'Total: ' + this.point.stackTotal;
-     }
-     },
-
-     series: [{
-     name: 'John',
-     data: [5, 3, 4, 7, 2]
-     }, {
-     name: 'Jane',
-     data: [2, null, 3, 2, 1]
-     }, {
-     name: 'Joe',
-     data: [3, 4, 4, 2, 5]
-     }],
-
-     loading: false
-     }*/
-
-
+    // editor part
     $scope.tabs = $scope.tabs || [];
     $scope.sourceTextChange = function () {
       for (var i = 0; i < $scope.tabs.length; i++) {
