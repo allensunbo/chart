@@ -8,6 +8,8 @@ angular.module('myApp.directives', [])
     };
   })
 
+  .constant('seriesType', 'seriesType')
+
   .directive('dataCoverage', function ($timeout) {
     return {
       restrict: 'E',

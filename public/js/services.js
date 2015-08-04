@@ -29,13 +29,13 @@ angular.module('myApp.services', [])
       },
       'Classification': {
         'available': [],
-        'missing': [],
-        'forwarded': [],
+        'missing': randomDates(),
+        'forwarded': randomDates2(),
         'test': [2, 4, 5, 9, 11, 12, 13],
       },
       'Price': {
-        'available': [],
-        'missing': [],
+        'available': randomDates(),
+        'missing': randomDates2(),
         'forwarded': [],
         'test': []
       }
@@ -50,3 +50,19 @@ angular.module('myApp.services', [])
     }
     this.allDates = allDates;
   });
+
+function randomDates() {
+  var dates = [];
+  for (var i = 0; i < 100; i++) {
+    if (i % 2 === 0)dates.push(i);
+  }
+  return dates;
+}
+
+function randomDates2() {
+  var dates = [];
+  for (var i = 0; i < 100; i++) {
+    if (i % 2 === 1)dates.push(i);
+  }
+  return dates;
+}
