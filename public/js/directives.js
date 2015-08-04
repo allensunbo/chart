@@ -19,46 +19,42 @@ angular.module('myApp.directives', [])
       link: function (scope, elem, attrs) {
 
         $timeout(function () {
-          extendConfig(scope, $timeout);
+          extendConfig(scope);
 
           var dates = scope.config.dates;
-          // TODO get from chartConfig directly!
+
           // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
-          var seriesTypes = [];
-          for (var attr in dates) {
-            for (var t in dates[attr]) {
-              seriesTypes.push(t);
-            }
-            break;
-          }
+          var seriesTypes = scope.config.seriesTypes;
 
           var tableInfo = collectTableInfo(seriesTypes, dates);
-          // console.log(tableInfo);
 
           var table = convertRawDataToChartData(scope, dates, tableInfo, seriesTypes);
 
-          // fix color
-          scope.config.options.colors = [];
-          console.log(scope.config.id)
-          for (attr in table) {
-            for (var i = 0; i < table[attr].length; i++) {
-              if (table[attr][i]['seriesType'] === 'available') {
-                scope.config.options.colors.push('#2f7ed8');
-              } else if (table[attr][i]['seriesType'] === 'missing') {
-                scope.config.options.colors.push('#910000');
-              } else if (table[attr][i]['seriesType'] === 'forwarded') {
-                scope.config.options.colors.push('#1aadce');
-              } else if (table[attr][i]['seriesType'] === 'test') {
-                scope.config.options.colors.push('#1aadce');
-              }
-            }
-            break;
-          }
+          fixColor(scope, table);
 
         }, 0);
       }
     }
   });
+
+function fixColor(scope, table) {
+  scope.config.options.colors = [];
+  for (var attr in table) {
+    for (var i = 0; i < table[attr].length; i++) {
+      if (table[attr][i]['seriesType'] === 'available') {
+        scope.config.options.colors.push('green');
+      } else if (table[attr][i]['seriesType'] === 'missing') {
+        scope.config.options.colors.push('#CC0A3B');
+      } else if (table[attr][i]['seriesType'] === 'forwarded') {
+        scope.config.options.colors.push('#CC9119');
+      } else if (table[attr][i]['seriesType'] === 'test') {
+        scope.config.options.colors.push('#1aadce');
+      }
+    }
+    break;
+  }
+
+}
 
 // merge 1D array data into ranges
 // eg [0, 1, 2, 5, 8, 9, 10] ==> [[0,3], [5,6], [8,11]
@@ -126,19 +122,20 @@ function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
   var series = [];
   for (var i = 0; i < seriesTypes.length; i++) {
     var seriesType = seriesTypes[i];
-
-
   }
   console.log(series)
-  var total = 0;
+
+  var _first = [0];
   for (var t in tableInfo) {
-    total += tableInfo[t];
+    _first.push(_first[_first.length - 1] + tableInfo[t]);
   }
 
+  console.log(_first);
 
   var attr = Object.keys(dates)[0];
   for (var i = 0; i < table[attr].length; i++) {
-    series.push({name: table[attr][i]['seriesType'] + i});
+    // data set name
+    series.push({name: table[attr][i]['seriesType'] + '#' + i, first: _first.indexOf(i) >= 0});
   }
 
   for (attr in table) {
@@ -146,6 +143,8 @@ function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
       series[i]['data'] = series[i]['data'] || [];
       // console.log(JSON.stringify(table[attr][i]))
       // series[i]['data'].push({color: 'red'});
+      if (!series[i]['first'])
+        series[i]['showInLegend'] = false;
       series[i]['data'].push(table[attr][i]['data']);
     }
   }
@@ -186,6 +185,21 @@ function defaultConfig(scope) {
           }
         }
       },
+      legend: {
+        align: 'center',
+        x: -30,
+        verticalAlign: 'bottom',
+        y: 25,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+        borderColor: '#CCC',
+        borderWidth: 1,
+        shadow: false,
+        enabled: true,
+        labelFormatter: function () {
+          return this.name.substring(0, this.name.lastIndexOf('#'));
+        }
+      },
       tooltip: {
         formatter: function () {
           /* return '<b>' + this.x + '</b><br/>' +
@@ -222,7 +236,7 @@ function defaultConfig(scope) {
     yAxis: {
       min: 0,
       title: {
-        text: 'Total fruit consumption'
+        text: ''
       },
       stackLabels: {
         enabled: false,
@@ -238,18 +252,7 @@ function defaultConfig(scope) {
       },
       tickInterval: 1
     },
-    legend: {
-      align: 'right',
-      x: -30,
-      verticalAlign: 'top',
-      y: 25,
-      floating: true,
-      backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-      borderColor: '#CCC',
-      borderWidth: 1,
-      shadow: false,
-      enabled: false
-    },
+
 
     loading: false
   };
