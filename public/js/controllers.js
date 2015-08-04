@@ -32,8 +32,11 @@ angular.module('myApp.controllers', []).
         name: 'forwarded',
         data: [[1, 2], [2, 4], [2, 3], [3, 4], [4, 5]]
       }, {
+        name: 'forwarded-2',
+        data: [[0.5, 1], [2, 4], [2, 3], [3, 4], [4, 5]]
+      }, {
         name: 'test',
-        data: [[0, 1], [0, 2], [2, 3], [3, 4], [4, 5]]
+        data: [[0, 0.5], [0, 2], [2, 3], [3, 4], [4, 5]]
       }],
       allDates: allDates
     };
@@ -94,32 +97,6 @@ angular.module('myApp.controllers', []).
     var tableInfo = collectTableInfo(seriesTypes, dates);
     console.log(tableInfo);
 
-
-    function convertRawDataToChartData(dates, tableInfo, seriesType) {
-      var table = {};
-      for (var attr in dates) {
-        //console.log(attr);
-        var el = [];
-        for (var i = 0; i < seriesTypes.length; i++) {
-          //console.log('@' + tableInfo[seriesTypes[i]]);
-          var data = dates[attr][seriesTypes[i]];
-          var merged = merge(data);
-          for (var j = 0; j < merged.length; j++) {
-            el.push({seriesType: seriesTypes[i], data: merged[j]});
-          }
-          for (var j = merged.length; j < tableInfo[seriesTypes[i]]; j++) {
-            el.push({seriesType: seriesTypes[i], data: [null, null]});
-          }
-        }
-        table[attr] = el;
-      }
-      console.log(JSON.stringify(table));
-      var series = [];
-
-    }
-
-    convertRawDataToChartData(dates, tableInfo, seriesTypes);
-
     // merge 1D array data into ranges
     // eg [0, 1, 2, 5, 8, 9, 10] ==> [[0,3], [5,6], [8,11]
     function merge(data) {
@@ -140,6 +117,63 @@ angular.module('myApp.controllers', []).
     }
 
     // console.log(merge([0, 1, 2, 5, 8, 9, 10]));
+
+
+    function convertRawDataToChartData(scope, dates, tableInfo, seriesType) {
+      var table = {};
+      for (var attr in dates) {
+        //console.log(attr);
+        var el = [];
+        for (var i = 0; i < seriesTypes.length; i++) {
+          //console.log('@' + tableInfo[seriesTypes[i]]);
+          var data = dates[attr][seriesTypes[i]];
+          var merged = merge(data);
+          for (var j = 0; j < merged.length; j++) {
+            el.push({seriesType: seriesTypes[i], data: merged[j]});
+          }
+          for (var j = merged.length; j < tableInfo[seriesTypes[i]]; j++) {
+            el.push({seriesType: seriesTypes[i], data: [null, null]});
+          }
+        }
+        table[attr] = el;
+      }
+      console.log(JSON.stringify(scope.chartConfig.series));
+      console.log(JSON.stringify(table));
+      var series = [];
+      for (var i = 0; i < seriesTypes.length; i++) {
+        var seriesType = seriesTypes[i];
+
+
+      }
+      console.log(series)
+      var numberOfAttributes = Object.keys(dates).length;
+      var total = 0;
+      for (var t in tableInfo) {
+        total += tableInfo[t];
+      }
+
+
+      var attr = Object.keys(dates)[0];
+      for (var i = 0; i < table[attr].length; i++) {
+        series.push({name: table[attr][i]['seriesType']});
+      }
+
+      for (attr in table) {
+        for (var i = 0; i < table[attr].length; i++) {
+          series[i]['data'] = series[i]['data'] || [];
+          // console.log(JSON.stringify(table[attr][i]))
+          series[i]['data'].push(table[attr][i]['data']);
+        }
+      }
+      scope.chartConfig.series = series;
+
+      console.log('series=');
+      console.log(JSON.stringify(series));
+
+    }
+
+    convertRawDataToChartData($scope, dates, tableInfo, seriesTypes);
+
 
     /*$scope.chartConfig = {
      options: {
