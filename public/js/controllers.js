@@ -3,16 +3,10 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-  controller('MainCtrl', function ($scope, $http, $timeout, $showdown) {
+  controller('MainCtrl', function ($scope, $http, $timeout, $showdown, ChartDataService) {
 
-    var allDates = [];
-    var startDate = new Date('2009-05-01');
-    var endDate = new Date('2009-06-30');
-    for (var i = 0; i < 100; i++) {
-      var d = new Date('2009-05-01');
-      d.setDate(startDate.getDate() + i);
-      allDates.push(d.toISOString().slice(0, 10));
-    }
+    var allDates = ChartDataService.allDates;
+    var dates = ChartDataService.dates;
 
     $scope.chartConfig = {
       id: 'my-chart', // chart id
@@ -22,60 +16,32 @@ angular.module('myApp.controllers', []).
       xAxis: {
         categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price']
       },
-      series: [{
-        name: 'available',
-        data: [[3, 4], [6, 10], [2, 3], [3, 4], [4, 5]]
-      }, {
-        name: 'missing',
-        data: [[2, 3], [4, 6], [2, 3], [3, 4], [4, 5]]
-      }, {
-        name: 'forwarded',
-        data: [[1, 2], [2, 4], [2, 3], [3, 4], [4, 5]]
-      }, {
-        name: 'forwarded-2',
-        data: [[0.5, 1], [2, 4], [2, 3], [3, 4], [4, 5]]
-      }, {
-        name: 'test',
-        data: [[0, 0.5], [0, 2], [2, 3], [3, 4], [4, 5]]
-      }],
-      allDates: allDates
+      /* series: [{
+       name: 'available',
+       data: [[3, 4], [6, 10], [2, 3], [3, 4], [4, 5]]
+       }, {
+       name: 'missing',
+       data: [[2, 3], [4, 6], [2, 3], [3, 4], [4, 5]]
+       }, {
+       name: 'forwarded',
+       data: [[1, 2], [2, 4], [2, 3], [3, 4], [4, 5]]
+       }, {
+       name: 'test',
+       data: [[0, 0.5], [1, 2], [2, 3], [3, 4], [4, 5]]
+       }],*/
+      allDates: allDates,
+      dates: dates
     };
 
-    var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
-
-    var dates = {
-      'Portfolio': {
-        'available': [0, 1, 2, 5, 8, 9, 10],
-        'missing': [6, 12, 13],
-        'forwarded': [3, 4, 7, 11],
-        'test': []
-      },
-      'Benchmark': {
-        'available': [0, 6, 8, 10],
-        'missing': [1, 3, 7],
-        'forwarded': [2, 4, 5, 9, 11, 12, 13],
-        'test': []
-      },
-      'Risk Model': {
-        'available': [0, 1, 3, 4, 5, 7, 8, 10],
-        'missing': [],
-        'forwarded': [],
-        'test': []
-      },
-      'Classification': {
-        'available': [],
-        'missing': [],
-        'forwarded': [],
-        'test': []
-      },
-      'Price': {
-        'available': [],
-        'missing': [],
-        'forwarded': [],
-        'test': []
+    // get from chartConfig directly!
+    // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
+    var seriesTypes = [];
+    for (var attr in $scope.chartConfig.dates) {
+      for (var t in $scope.chartConfig.dates[attr]) {
+        seriesTypes.push(t);
       }
-    };
-
+      break;
+    }
 
     function collectTableInfo(seriesTypes, dates) {
       var tableInfo = {};
@@ -146,7 +112,6 @@ angular.module('myApp.controllers', []).
 
       }
       console.log(series)
-      var numberOfAttributes = Object.keys(dates).length;
       var total = 0;
       for (var t in tableInfo) {
         total += tableInfo[t];
@@ -155,13 +120,14 @@ angular.module('myApp.controllers', []).
 
       var attr = Object.keys(dates)[0];
       for (var i = 0; i < table[attr].length; i++) {
-        series.push({name: table[attr][i]['seriesType']});
+        series.push({name: table[attr][i]['seriesType'] + i});
       }
 
       for (attr in table) {
         for (var i = 0; i < table[attr].length; i++) {
           series[i]['data'] = series[i]['data'] || [];
           // console.log(JSON.stringify(table[attr][i]))
+          // series[i]['data'].push({color: 'red'});
           series[i]['data'].push(table[attr][i]['data']);
         }
       }

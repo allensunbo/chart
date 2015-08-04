@@ -33,7 +33,7 @@ function extendConfig(scope, $timeout) {
 function defaultConfig(scope) {
   return {
     options: {
-      colors: ['#2f7ed8', '#910000', '#2f7ed8', '#1aadce'],
+      colors: ['#2f7ed8', '#2f7ed8', '#2f7ed8', '#2f7ed8', '#910000', '#910000', '#910000', '#1aadce', '#1aadce', '#1aadce', '#1aadce', '#1aadce'],
       chart: {
         type: 'columnrange',
         inverted: true,
