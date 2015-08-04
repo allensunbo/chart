@@ -1,0 +1,79 @@
+<!--<div class="container">
+    <div class="row">
+        <div class="span6">
+            <div style="padding: 10px; border: 1px solid #aaa;">
+                <ul class="breadcrumb">
+                    <li ng-repeat="b in breadcrums" ng-class="{ active: $last }">{{ b }}
+                        <span class="divider" ng-show="!$last">/</span>
+                    </li>
+                </ul>
+                <div>Root</div>
+                <div tree-view="files" tree-view-options="options"></div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<style type="text/css">
+    #footer {
+        height: 60px;
+    }
+
+    #footer {
+        background-color: #f5f5f5;
+    }
+
+    /* Lastly, apply responsive CSS fixes as necessary */
+    @media (max-width: 767px) {
+        #footer {
+            margin-left: -20px;
+            margin-right: -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+
+    .editor {
+        background-color: white;
+    }
+</style>
+
+<div class="jumbotron">
+    <div class="row">
+        <data-data-coverage config="chartConfig"></data-data-coverage>
+    </div>
+    <button class="btn btn-primary" ng-click="save()">save</button>
+</div>
+
+<nav class="navbar navbar-default col col-md-2" role="navigation" style="height:800px; overflow: auto;">
+    <div class="pull-left">
+        <js-tree tree-data="scope" tree-model="treeModel"
+                 tree-events="ready:readyCB;changed:changedCB;open_node:openNodeCB;move_node:moveNodeCB;create_node:createNodeCB;
+                 rename_node:renameNodeCB;delete_node:deleteNodeCB;"
+                 tree-plugins="dnd,contextmenu,types,state" id="jsTree"></js-tree>
+    </div>
+</nav>
+
+<div class="navbar navbar-default col col-md-10" role="navigation" style="height:800px; overflow: auto;">
+    <tabset>
+        <tab ng-repeat="tab in tabs" active="tab.active">
+            <tab-heading>
+                {{tab.path}}
+                <div style="display:inline;margin-left:20px;">
+                    <a ng-click="saveFile()" href=''><i class="fa fa-floppy-o" style="color:green;font-size:18px;"></i></a>
+                    <a ng-click="removeTab($index)" href=''><i class="fa fa-times"
+                                                               style="color:red;font-size:18px;"></i></a>
+                </div>
+            </tab-heading>
+            <textarea style="width:97%;height:600px;" ng-model="tab.text" ng-change="sourceTextChange()"></textarea>
+
+            <div ng-bind-html="html"></div>
+        </tab>
+    </tabset>
+</div>
+
+<div id="footer" class="container pull-right">
+    {{treeModel|json}}
+</div>
+

@@ -1,0 +1,24 @@
+{
+  "name": "angular-express-seed",
+  "version": "0.0.0",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "jstree-directive": "~0.1.5",
+    "angular-ui-layout": "~1.0.5",
+    "angular-bootstrap": "~0.13.1",
+    "angular-markdown-directive": "~0.3.1",
+    "ng-showdown": "~1.0.0",
+    "font-awesome": "~4.4.0",
+    "jstree": "~3.1.1",
+    "angular-route": "~1.4.3",
+    "highcharts-ng": "~0.0.8"
+  }
+}
