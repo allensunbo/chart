@@ -54,7 +54,7 @@ angular.module('myApp.services', [])
 function randomDates() {
   var dates = [];
   for (var i = 0; i < 100; i++) {
-    if (i % 2 === 0)dates.push(i);
+    // if (i % 2 === 0)dates.push(i);
   }
   return dates;
 }
@@ -62,7 +62,7 @@ function randomDates() {
 function randomDates2() {
   var dates = [];
   for (var i = 0; i < 100; i++) {
-    if (i % 2 === 1)dates.push(i);
+    //if (i % 2 === 1)dates.push(i);
   }
   return dates;
 }
