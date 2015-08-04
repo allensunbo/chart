@@ -176,7 +176,7 @@ function plotDataCoverageChart($scope, ChartDataService) {
       categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price'],
     },
     // series: [],
-    // seriesTypes: ['available', 'missing', 'forwarded', 'test'],
+    seriesTypes: ['available', 'missing', 'forwarded', 'test'],
     allDates: allDates,
     dates: dates
   };

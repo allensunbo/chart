@@ -159,8 +159,8 @@ function convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes) {
   }
   scope.config.series = series;
 
-  console.log('series=');
-  console.log(JSON.stringify(series));
+  //console.log('series=');
+  //console.log(JSON.stringify(series));
   return table;
 }
 
@@ -175,6 +175,7 @@ function defaultConfig(scope) {
         backgroundColor: 'transparent',
         plotBorderColor: '#ccc',
         plotBorderWidth: 2,
+        shadow: false,
       },
       plotOptions: {
         columnrange: {
@@ -218,9 +219,12 @@ function defaultConfig(scope) {
         formatter: tooltipFormatter(scope)
       }
     },
-    /* title: {
-     text: 'Data Coverage Chart'
-     },*/
+    title: {
+      //text: 'Data Coverage Chart'
+      style: {
+        "color": "blue", "fontSize": "18px", 'font-weight': 'bold'
+      }
+    },
     xAxis: {
       tickLength: 0,
     },
