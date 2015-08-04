@@ -96,8 +96,7 @@ angular.module('myApp.controllers', []).
 
 
     function convertRawDataToChartData(dates, tableInfo, seriesType) {
-      var numberOfAttributes = dates.length;
-      var table = [];
+      var table = {};
       for (var attr in dates) {
         //console.log(attr);
         var el = [];
@@ -106,15 +105,17 @@ angular.module('myApp.controllers', []).
           var data = dates[attr][seriesTypes[i]];
           var merged = merge(data);
           for (var j = 0; j < merged.length; j++) {
-            el.push(merged[j]);
+            el.push({seriesType: seriesTypes[i], data: merged[j]});
           }
           for (var j = merged.length; j < tableInfo[seriesTypes[i]]; j++) {
-            el.push([null, null]);
+            el.push({seriesType: seriesTypes[i], data: [null, null]});
           }
         }
-        table.push(el);
+        table[attr] = el;
       }
       console.log(JSON.stringify(table));
+      var series = [];
+
     }
 
     convertRawDataToChartData(dates, tableInfo, seriesTypes);
