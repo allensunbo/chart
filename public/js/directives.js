@@ -199,36 +199,10 @@ function defaultConfig(scope) {
         shadow: false,
         enabled: true,
         labelFormatter: function () {
-          return this.name.substring(0, this.name.lastIndexOf('#'));
+          return cleanSeriesName(this.name);
         }
       },
       tooltip: {
-        /*formatter: function () {
-         /!* return '<b>' + this.x + '</b><br/>' +
-         this.series.name + ': ' + this.y + '<br/>' +
-         'Total: ' + this.point.stackTotal;*!/
-         // console.log(this);
-         var series = scope.config.series;
-         var xCategories = scope.config.xAxis.categories;
-         var seriesName = this.series.name;
-         var attrName = this.x;
-         for (var dataIdx = 0; dataIdx < series.length; dataIdx++) {
-         for (var attrIdx = 0; attrIdx < xCategories.length; attrIdx++) {
-         var data = series[dataIdx];
-         var attr = xCategories[attrIdx];
-         if (seriesName === data.name && attrName === attr) {
-         var _start = 0, _end = 0;
-         var n = series.length - 1;
-         for (var k = 0; k < n - dataIdx; k++) {
-         _start += series[n - k].data[attrIdx];
-         }
-         _end = _start + series[dataIdx].data[attrIdx] - 1; // end date exclusive
-         return scope.config.allDates[_start] + ' - ' + scope.config.allDates[_end];
-         }
-         }
-         }
-         return '';
-         }*/
         formatter: tooltipFormatter(scope)
       }
     },
@@ -267,24 +241,27 @@ function tooltipFormatter(scope) {
     var xCategories = scope.config.xAxis.categories;
     var seriesName = this.series.name;
     var attrName = this.x;
-    console.log(JSON.stringify(series));
-    console.log(xCategories);
-    console.log(seriesName);
-    console.log(attrName);
     for (var dataIdx = 0; dataIdx < series.length; dataIdx++) {
       for (var attrIdx = 0; attrIdx < xCategories.length; attrIdx++) {
         var data = series[dataIdx];
         var attr = xCategories[attrIdx];
         if (seriesName === data.name && attrName === attr) {
-          console.log('found' + '|' + dataIdx + '|' + attrIdx);
           var _start = series[dataIdx]['data'][attrIdx][0],
             _end = series[dataIdx]['data'][attrIdx][1] - 1; // end date exclusive
-          return scope.config.allDates[_start] + ' - ' + scope.config.allDates[_end];
+          if (_end === _start) {
+            return cleanSeriesName(seriesName) + '<br>' + scope.config.allDates[_start];
+          } else {
+            return cleanSeriesName(seriesName) + '<br>' + scope.config.allDates[_start] + ' to ' + scope.config.allDates[_end];
+          }
         }
       }
     }
     return '';
   }
+}
+
+function cleanSeriesName(seriesName) {
+  return seriesName.substring(0, seriesName.lastIndexOf('#'));
 }
 
 
