@@ -30,7 +30,7 @@ angular.module('myApp.directives', [])
 
           var tableInfo = collectTableInfo(seriesTypes, dates);
 
-          var table = convertRawDataToChartData(scope, dates, tableInfo, seriesTypes);
+          var table = convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes);
 
           fixColor(scope, table);
 
@@ -101,7 +101,7 @@ function extendConfig(scope) {
 
 }
 
-function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
+function convertRawDataToTable(dates, tableInfo, seriesTypes) {
   var table = {};
   for (var attr in dates) {
     //console.log(attr);
@@ -120,7 +120,13 @@ function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
     table[attr] = el;
   }
   // console.log(JSON.stringify(scope.config.series));
-  console.log(JSON.stringify(table));
+  // console.log(JSON.stringify(table));
+  return table;
+}
+
+function convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes) {
+  var table = convertRawDataToTable(dates, tableInfo, seriesTypes);
+
   var series = [];
   for (var i = 0; i < seriesTypes.length; i++) {
     var seriesType = seriesTypes[i];
@@ -164,7 +170,10 @@ function defaultConfig(scope) {
       chart: {
         type: 'columnrange',
         inverted: true,
-        colorByPoint: true
+        colorByPoint: true,
+        backgroundColor: 'transparent',
+        plotBorderColor: '#ccc',
+        plotBorderWidth: 2,
       },
       plotOptions: {
         columnrange: {
@@ -188,10 +197,11 @@ function defaultConfig(scope) {
         }
       },
       legend: {
-        align: 'center',
-        x: -30,
-        verticalAlign: 'bottom',
-        y: 25,
+        align: 'right',
+        x: 0,
+        verticalAlign: 'center',
+        layout: 'vertical',
+        y: 125,
         floating: true,
         backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
         borderColor: '#CCC',
@@ -200,7 +210,8 @@ function defaultConfig(scope) {
         enabled: true,
         labelFormatter: function () {
           return cleanSeriesName(this.name);
-        }
+        },
+        margin: 20,
       },
       tooltip: {
         formatter: tooltipFormatter(scope)
@@ -215,6 +226,11 @@ function defaultConfig(scope) {
       title: {
         text: ''
       },
+      gridLineWidth: 0,
+      lineWidth: 1,
+      tickLength: 5,
+      tickWidth: 1,
+      tickPosition: 'outside',
       stackLabels: {
         enabled: false,
         style: {
@@ -230,6 +246,7 @@ function defaultConfig(scope) {
       tickInterval: 1
     },
 
+    seriesTypes: ['available', 'missing', 'forwarded', 'test'],
 
     loading: false
   };

@@ -5,22 +5,7 @@
 angular.module('myApp.controllers', []).
   controller('MainCtrl', function ($scope, $http, $timeout, $showdown, ChartDataService) {
 
-    var allDates = ChartDataService.allDates;
-    var dates = ChartDataService.dates;
-
-    $scope.chartConfig = {
-      id: 'my-chart', // chart id
-      title: {
-        text: 'Data Coverage Chart'
-      },
-      xAxis: {
-        categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price']
-      },
-      // series: [],
-      seriesTypes: ['available', 'missing', 'forwarded', 'test'],
-      allDates: allDates,
-      dates: dates
-    };
+    plotDataCoverageChart($scope, ChartDataService);
 
     // editor part
     $scope.tabs = $scope.tabs || [];
@@ -176,6 +161,27 @@ angular.module('myApp.controllers', []).
     }
     //
   });
+
+function plotDataCoverageChart($scope, ChartDataService) {
+  // data coverage chart
+  var allDates = ChartDataService.allDates;
+  var dates = ChartDataService.dates;
+
+  $scope.chartConfig = {
+    id: 'my-chart', // chart id
+    title: {
+      text: 'Data Coverage Chart'
+    },
+    xAxis: {
+      categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price'],
+      tickLength: 0,
+    },
+    // series: [],
+    // seriesTypes: ['available', 'missing', 'forwarded', 'test'],
+    allDates: allDates,
+    dates: dates
+  };
+}
 
 function findNodeById($scope, id) {
   for (var i = 0; i < $scope.treeModel.length; i++) {
