@@ -18,9 +18,64 @@ angular.module('myApp.directives', [])
       },
       link: function (scope, elem, attrs) {
         extendConfig(scope, $timeout);
+
+        var dates = scope.config.dates;
+        // get from chartConfig directly!
+        // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
+        var seriesTypes = [];
+        for (var attr in dates) {
+          for (var t in dates[attr]) {
+            seriesTypes.push(t);
+          }
+          break;
+        }
+
+        var tableInfo = collectTableInfo(seriesTypes, dates);
+        console.log(tableInfo);
+
+        // console.log(merge([0, 1, 2, 5, 8, 9, 10]));
+
+
+        convertRawDataToChartData(scope, dates, tableInfo, seriesTypes);
       }
     }
   });
+
+// merge 1D array data into ranges
+// eg [0, 1, 2, 5, 8, 9, 10] ==> [[0,3], [5,6], [8,11]
+function merge(data) {
+  var _start = 0, _end = 0, cur = 1;
+  var result = [];
+  while (_end < data.length) {
+    if (data[cur] === data[cur - 1] + 1) {
+      _end = cur;
+      cur++;
+    } else {
+      result.push([data[_start], data[_end] + 1]);
+      _end++;
+      _start = _end;
+      cur = _start + 1;
+    }
+  }
+  return result;
+}
+
+function collectTableInfo(seriesTypes, dates) {
+  var tableInfo = {};
+  seriesTypes.forEach(function (seriesType) {
+    var s = 0;
+    for (var attr in dates) {
+      // console.log(attr);
+      var data = dates[attr][seriesType];
+      var merged = merge(data);
+      // console.log(merged);
+      s = s < merged.length ? merged.length : s;
+    }
+    console.log(s);
+    tableInfo[seriesType] = s;
+  });
+  return tableInfo;
+}
 
 function extendConfig(scope, $timeout) {
   $timeout(function () {
@@ -28,6 +83,59 @@ function extendConfig(scope, $timeout) {
     angular.extend(_config, defaultConfig(scope), scope.config);
     angular.copy(_config, scope.config);
   }, 0);
+}
+
+function convertRawDataToChartData(scope, dates, tableInfo, seriesTypes) {
+  var table = {};
+  for (var attr in dates) {
+    //console.log(attr);
+    var el = [];
+    for (var i = 0; i < seriesTypes.length; i++) {
+      //console.log('@' + tableInfo[seriesTypes[i]]);
+      var data = dates[attr][seriesTypes[i]];
+      var merged = merge(data);
+      for (var j = 0; j < merged.length; j++) {
+        el.push({seriesType: seriesTypes[i], data: merged[j]});
+      }
+      for (var j = merged.length; j < tableInfo[seriesTypes[i]]; j++) {
+        el.push({seriesType: seriesTypes[i], data: [null, null]});
+      }
+    }
+    table[attr] = el;
+  }
+  // console.log(JSON.stringify(scope.config.series));
+  console.log(JSON.stringify(table));
+  var series = [];
+  for (var i = 0; i < seriesTypes.length; i++) {
+    var seriesType = seriesTypes[i];
+
+
+  }
+  console.log(series)
+  var total = 0;
+  for (var t in tableInfo) {
+    total += tableInfo[t];
+  }
+
+
+  var attr = Object.keys(dates)[0];
+  for (var i = 0; i < table[attr].length; i++) {
+    series.push({name: table[attr][i]['seriesType'] + i});
+  }
+
+  for (attr in table) {
+    for (var i = 0; i < table[attr].length; i++) {
+      series[i]['data'] = series[i]['data'] || [];
+      // console.log(JSON.stringify(table[attr][i]))
+      // series[i]['data'].push({color: 'red'});
+      series[i]['data'].push(table[attr][i]['data']);
+    }
+  }
+  scope.config.series = series;
+
+  console.log('series=');
+  console.log(JSON.stringify(series));
+
 }
 
 function defaultConfig(scope) {
@@ -128,3 +236,6 @@ function defaultConfig(scope) {
     loading: false
   };
 }
+
+
+
