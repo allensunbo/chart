@@ -174,7 +174,6 @@ function plotDataCoverageChart($scope, ChartDataService) {
     },
     xAxis: {
       categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price'],
-      tickLength: 0,
     },
     // series: [],
     // seriesTypes: ['available', 'missing', 'forwarded', 'test'],

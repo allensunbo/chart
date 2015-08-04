@@ -1,5 +1,8 @@
 'use strict';
 
+
+var datatSetDelimiter = '#%';
+
 angular.module('myApp.directives', [])
 
   .directive('appVersion', function (version) {
@@ -88,7 +91,7 @@ function collectTableInfo(seriesTypes, dates) {
       // console.log(merged);
       s = s < merged.length ? merged.length : s;
     }
-    console.log(s);
+    // console.log(s);
     tableInfo[seriesType] = s;
   });
   return tableInfo;
@@ -96,7 +99,7 @@ function collectTableInfo(seriesTypes, dates) {
 
 function extendConfig(scope) {
   var _config = {};
-  angular.extend(_config, defaultConfig(scope), scope.config);
+  angular.merge(_config, defaultConfig(scope), scope.config);
   angular.copy(_config, scope.config);
 
 }
@@ -131,19 +134,17 @@ function convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes) {
   for (var i = 0; i < seriesTypes.length; i++) {
     var seriesType = seriesTypes[i];
   }
-  console.log(series)
+  // console.log(series)
 
   var _first = [0];
   for (var t in tableInfo) {
     _first.push(_first[_first.length - 1] + tableInfo[t]);
   }
 
-  console.log(_first);
-
   var attr = Object.keys(dates)[0];
   for (var i = 0; i < table[attr].length; i++) {
     // data set name
-    series.push({name: table[attr][i]['seriesType'] + '#' + i, first: _first.indexOf(i) >= 0});
+    series.push({name: table[attr][i]['seriesType'] + datatSetDelimiter + i, first: _first.indexOf(i) >= 0});
   }
 
   for (attr in table) {
@@ -220,7 +221,9 @@ function defaultConfig(scope) {
     /* title: {
      text: 'Data Coverage Chart'
      },*/
-
+    xAxis: {
+      tickLength: 0,
+    },
     yAxis: {
       min: 0,
       title: {
@@ -278,7 +281,7 @@ function tooltipFormatter(scope) {
 }
 
 function cleanSeriesName(seriesName) {
-  return seriesName.substring(0, seriesName.lastIndexOf('#'));
+  return seriesName.substring(0, seriesName.lastIndexOf(datatSetDelimiter));
 }
 
 
