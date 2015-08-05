@@ -13,7 +13,7 @@ angular.module('myApp.directives', [])
 
   .constant('seriesType', 'seriesType')
 
-  .directive('dataCoverage', function ($timeout) {
+  .directive('dataCoverage', function ($timeout, ChartDataService) {
     return {
       restrict: 'E',
       replace: true,
@@ -28,12 +28,11 @@ angular.module('myApp.directives', [])
 
         // try update
         scope.update = function () {
-          scope.config.dates['Price-2'] = {
-            'available': randomDates(),
-            'missing': randomDates2(),
-            'forwarded': [],
-            'test': []
+          scope.config.rawDates['Price-2'] = {
+            'available': ChartDataService.randomDates(scope.config.allDates),
+            'forwarded': 3
           }
+          delete scope.config.rawDates['Classification']
           delete scope.config.dates['Classification']
           scope.config.xAxis.categories.splice(3, 1);
           scope.config.xAxis.categories.push('Price-2');
@@ -121,10 +120,7 @@ angular.module('myApp.directives', [])
     }
 
     function extendConfig(scope) {
-      var _config = {};
-      angular.merge(_config, defaultConfig(scope), scope.config);
-      angular.copy(_config, scope.config);
-
+      angular.copy(angular.merge({}, defaultConfig(scope), scope.config), scope.config);
     }
 
     function convertRawDataToTable(dates, tableInfo, seriesTypes) {
@@ -255,7 +251,7 @@ angular.module('myApp.directives', [])
           }
         },
         xAxis: {
-          tickLength: 0,
+          tickLength: 0
         },
         yAxis: {
           min: 0,
