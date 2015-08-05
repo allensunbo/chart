@@ -25,23 +25,27 @@ angular.module('myApp.directives', [])
       },
       link: function (scope, elem, attrs) {
 
-        // try update
-        scope.$on('chart.attr.add', function (event, data) {
-          for (var attr in data) {
-            addAttrToChart(scope, attr, data[attr]);
-          }
-          init(scope, $timeout);
-        });
-
-        scope.$on('chart.attr.remove', function (event, data) {
-          var attr = data;
-          removeAttrFromChart(scope, attr);
-          init(scope, $timeout);
-        });
-
         init(scope, $timeout);
+
+        processEvent(scope);
       }
     };
+
+    function processEvent(scope) {
+      scope.$on('chart.attr.add', function (event, data) {
+        for (var attr in data) {
+          addAttrToChart(scope, attr, data[attr]);
+        }
+        init(scope, $timeout);
+      });
+
+      scope.$on('chart.attr.remove', function (event, data) {
+        var attr = data;
+        removeAttrFromChart(scope, attr);
+        init(scope, $timeout);
+      });
+
+    }
 
     function removeAttrFromChart(scope, attrName) {
       delete scope.config.rawDates[attrName];
