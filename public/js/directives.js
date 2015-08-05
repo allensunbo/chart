@@ -13,13 +13,12 @@ angular.module('myApp.directives', [])
 
   .constant('seriesType', 'seriesType')
 
-  .directive('dataCoverage', function ($timeout, ChartDataService) {
+  .directive('dataCoverage', function ($timeout) {
     return {
       restrict: 'E',
       replace: true,
       template: '<div style="margin:10px;padding:10px;">' +
       '<highchart id="{{config.id}}" config="config" class="span10"></highchart>' +
-      '<button ng-click="update()">update</button>' +
       '</div>',
       scope: {
         config: '='
@@ -27,14 +26,19 @@ angular.module('myApp.directives', [])
       link: function (scope, elem, attrs) {
 
         // try update
-        scope.update = function () {
-          removeAttrFromChart(scope, 'Classification');
-          addAttrToChart(scope, 'Alpha', {
-            'available': ChartDataService.randomDates(scope.config.allDates),
-            'forwarded': 3
-          });
+        scope.$on('chart.attr.add', function (event, data) {
+          for (var attr in data) {
+            addAttrToChart(scope, attr, data[attr]);
+          }
           init(scope, $timeout);
-        };
+        });
+
+        scope.$on('chart.attr.remove', function (event, data) {
+          var attr = data;
+          removeAttrFromChart(scope, attr);
+          init(scope, $timeout);
+        });
+
         init(scope, $timeout);
       }
     };

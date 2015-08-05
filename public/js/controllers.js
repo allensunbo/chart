@@ -7,6 +7,16 @@ angular.module('myApp.controllers', []).
 
     plotDataCoverageChart($scope, ChartDataService);
 
+    $scope.update = function () {
+      $scope.$broadcast('chart.attr.add', {
+        'Alpha': {
+          'available': ChartDataService.randomDates($scope.chartConfig.allDates),
+          'forwarded': 3
+        }
+      });
+      $scope.$broadcast('chart.attr.remove', 'Classification');
+    };
+
     // editor part
     $scope.tabs = $scope.tabs || [];
     $scope.sourceTextChange = function () {
