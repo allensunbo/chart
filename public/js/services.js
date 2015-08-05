@@ -8,7 +8,7 @@
 angular.module('myApp.services', [])
   .value('version', '0.1')
   .service('ChartDataService', function () {
-    this.dates = {
+    /*this.dates = {
       'Portfolio': {
         'available': [0, 1, 2, 5, 8, 9, 10],
         'missing': [6, 12, 13],
@@ -39,7 +39,7 @@ angular.module('myApp.services', [])
         'forwarded': [],
         'test': []
       }
-    };
+    };*/
 
     var allDates = [];
     var startDate = new Date('2009-05-01');
@@ -49,6 +49,32 @@ angular.module('myApp.services', [])
       allDates.push(d.toISOString().slice(0, 10));
     }
     this.allDates = allDates;
+
+    this.rawDates = {
+      'Portfolio': {
+        'available': ['2009-05-01', '2009-05-04', '2009-05-05', '2009-07-04', '2009-08-08'],
+        'forwarded': 2
+      },
+      'Benchmark': {
+        'available': ['2009-05-01', '2009-05-04', '2009-05-05'],
+        'forwarded': 2
+      },
+      'Risk Model': {
+        'available': ['2009-05-01', '2009-05-04', '2009-05-05'],
+        'forwarded': 2
+      },
+      'Classification': {
+        'available': [],
+        'forwarded': 2
+      },
+      'Price': {
+        'available': [],
+        'forwarded': 1
+      }
+    };
+
+    // this.dates = convertRawDates(this.allDates, rawDates);
+
   });
 
 function randomDates() {

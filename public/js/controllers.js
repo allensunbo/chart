@@ -165,7 +165,7 @@ angular.module('myApp.controllers', []).
 function plotDataCoverageChart($scope, ChartDataService) {
   // data coverage chart
   var allDates = ChartDataService.allDates;
-  var dates = ChartDataService.dates;
+  var rawDates = ChartDataService.rawDates;
 
   $scope.chartConfig = {
     id: 'my-chart', // chart id
@@ -176,9 +176,9 @@ function plotDataCoverageChart($scope, ChartDataService) {
       categories: ['Portfolio', 'Benchmark', 'Risk Model', 'Classification', 'Price'],
     },
     // series: [],
-    seriesTypes: ['available', 'missing', 'forwarded', 'test'],
+    seriesTypes: ['available', 'missing', 'forwarded'/*, 'test'*/],
     allDates: allDates,
-    dates: dates
+    rawDates: rawDates
   };
 }
 
