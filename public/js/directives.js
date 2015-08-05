@@ -28,20 +28,27 @@ angular.module('myApp.directives', [])
 
         // try update
         scope.update = function () {
-          scope.config.rawDates['Price-2'] = {
+          removeAttrFromChart(scope, 'Classification');
+          addAttrToChart(scope, 'Alpha', {
             'available': ChartDataService.randomDates(scope.config.allDates),
             'forwarded': 3
-          }
-          delete scope.config.rawDates['Classification']
-          delete scope.config.dates['Classification']
-          scope.config.xAxis.categories.splice(3, 1);
-          scope.config.xAxis.categories.push('Price-2');
+          });
           init(scope, $timeout);
-        }
+        };
         init(scope, $timeout);
       }
+    };
+
+    function removeAttrFromChart(scope, attrName) {
+      delete scope.config.rawDates[attrName];
+      delete scope.config.dates[attrName];
+      scope.config.xAxis.categories.splice(scope.config.xAxis.categories.indexOf(attrName), 1);
     }
 
+    function addAttrToChart(scope, attrName, rawDates) {
+      scope.config.rawDates[attrName] = rawDates;
+      scope.config.xAxis.categories.push(attrName);
+    }
 
     function init(scope, $timeout) {
       $timeout(function () {
