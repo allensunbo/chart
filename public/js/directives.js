@@ -17,30 +17,47 @@ angular.module('myApp.directives', [])
     return {
       restrict: 'E',
       replace: true,
-      template: '<div><highchart id="{{config.id}}" config="config" class="span10"></highchart></div>',
+      template: '<div><highchart id="{{config.id}}" config="config" class="span10"></highchart><button ng-click="update()">update</button></div>',
       scope: {
         config: '='
       },
       link: function (scope, elem, attrs) {
 
-        $timeout(function () {
-          extendConfig(scope);
-
-          var dates = scope.config.dates;
-
-          // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
-          var seriesTypes = scope.config.seriesTypes;
-
-          var tableInfo = collectTableInfo(seriesTypes, dates);
-
-          var table = convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes);
-
-          fixColor(scope, table);
-
-        }, 0);
+        // try update
+        scope.update = function () {
+          scope.config.dates['Price-2'] = {
+            'available': randomDates(),
+            'missing': randomDates2(),
+            'forwarded': [],
+            'test': []
+          }
+          delete scope.config.dates['Classification']
+          scope.config.xAxis.categories.splice(3, 1);
+          scope.config.xAxis.categories.push('Price-2');
+          init(scope, $timeout);
+        }
+        init(scope, $timeout);
       }
     }
   });
+
+function init(scope, $timeout) {
+  $timeout(function () {
+    extendConfig(scope);
+
+    var dates = scope.config.dates;
+
+    // var seriesTypes = ['available', 'missing', 'forwarded', 'test'];
+    var seriesTypes = scope.config.seriesTypes;
+
+    var tableInfo = collectTableInfo(seriesTypes, dates);
+
+    var table = convertRawDataToChartSeries(scope, dates, tableInfo, seriesTypes);
+
+    fixColor(scope, table);
+
+  }, 0);
+}
 
 function fixColor(scope, table) {
   scope.config.options.colors = [];
